@@ -3,6 +3,9 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits, REST, Routes } = require('discord.js');
 const { token, clientId } = require('./../config.json');
 
+// load .env file
+require('dotenv').config()
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();

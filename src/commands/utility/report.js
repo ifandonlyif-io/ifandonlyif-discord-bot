@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, CommandInteraction } = require('discord.js');
 const axios = require('axios').default;
 const moment = require('moment');
-const { apiUrl } = require('../../../config.json')
 
 const failColor = 0xF24150
 const warnColor = 0xFBA432
@@ -44,7 +43,7 @@ module.exports = {
 
     console.log(interaction);
 
-    await axios.post(`${apiUrl}/discord/report`, {
+    await axios.post(`${process.env.apiUrl}/discord/report`, {
       url: url,
       guild_id: interaction.guildId,
       guild_name: interaction.guild.name,

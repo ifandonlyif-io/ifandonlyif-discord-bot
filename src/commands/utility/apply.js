@@ -1,6 +1,10 @@
 const { default: axios } = require('axios');
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder, TextInputBuilder } = require('discord.js');
-const { apiUrl } = require('../../../config.json')
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const moment = require('moment');
+
+const failColor = 0xF24150
+const warnColor = 0xFBA432
+const successColor = 0x3FBF83
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,42 +26,68 @@ module.exports = {
         .addComponents(confirm, cancel);
 
     const response = await interaction.reply({
-        content: `Are you sure you want to apply this channel can report sus NFT projects?`,
+        content: `Do you you want to this discord channel can report sus NFT projects?`,
         components: [row],
     });
+
+    let embedMessage = new EmbedBuilder().
+        setTitle('ifandonlyif-report-bot Apply').
+        setDescription('Confirmation not received within 1 minute, cancelling');
 
     const filter = i => i.user.id === interaction.user.id;
     try {
         const confirmation = await response.awaitMessageComponent({ filter, time: 60000 });
 
         if (confirmation.customId === 'confirm') {
-            axios.post(`${apiUrl}/discord/apply`, {
+            axios.post(`${process.env.apiUrl}/discord/apply`, {
                 guild_id: interaction.channel.guildId,
                 channel_name: interaction.guild.name,
             }, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
-                  }            
+                }            
             }).then((response) => {
-                console.log(response);
-            }).catch((response) => {
-                console.log(response);
-            })
+                embedMessage = embedMessage.setColor(successColor).
+                    setDescription(`we received your appliance`).
+                    setTimestamp();
 
-            await response.interaction.editReply({
-                content: `Appliance sent!`,
-                components: []
-            });
-        } else if (confirmation.customId === 'cancel') {
-            await response.interaction.editReply({
-                content: 'Apply cancelled.',
-                components: []
-            });
-        }    
+            }).catch((e) => {
+                if (e.response.status == 409) {
+                    embedMessage = embedMessage.setColor(warnColor).
+                        setDescription(`you have applied before.`).
+                        setFields(
+                            {
+                                name: 'apply at',
+                                value: moment(e.response.data.data.createdAt).format('YYYY/MM/DD hh:mm:ss ZZ'),
+                            }
+                        ).setTimestamp();
+                } else {
+                    embedMessage = embedMessage.setColor(failColor).
+                        setDescription(e.response.data.message);
+                        setFields({
+                            name: 'error', value: 'If you see this message, please let us know.'
+                        })
+                }
+                response.interaction.editReply({
+                    embeds: [embedMessage],
+                    components: [],
+                });
+                return
+            })
+        } else {
+            embedMessage = embedMessage.setDescription('action canceled.')
+        }
+
+        await response.interaction.editReply({
+            embeds: [embedMessage],
+            components: [],
+        });
 
     } catch (e) {
-        console.log(e);
-        await response.interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] });
+        await response.interaction.editReply({
+            embeds: [embedMessage],
+            components: [],
+        });
     }    
   },
 };
