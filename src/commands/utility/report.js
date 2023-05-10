@@ -51,7 +51,8 @@ module.exports = {
       reporter_avatar: interaction.user.avatar,
     }, {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
+        'api-key': 'valid-key',
       }
     }).then((response) => {
       embedMessage = embedMessage.setColor(successColor).

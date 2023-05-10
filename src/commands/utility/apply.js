@@ -39,19 +39,21 @@ module.exports = {
         const confirmation = await response.awaitMessageComponent({ filter, time: 60000 });
 
         if (confirmation.customId === 'confirm') {
-            axios.post(`${process.env.apiUrl}/discord/apply`, {
+            await axios.post(`${process.env.apiUrl}/discord/apply`, {
                 guild_id: interaction.channel.guildId,
                 channel_name: interaction.guild.name,
             }, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }            
-            }).then((response) => {
+            }).then((res) => {
+                console.log(res, embedMessage);
                 embedMessage = embedMessage.setColor(successColor).
                     setDescription(`we received your appliance`).
                     setTimestamp();
 
             }).catch((e) => {
+                console.log(e);
                 if (e.response.status == 409) {
                     embedMessage = embedMessage.setColor(warnColor).
                         setDescription(`you have applied before.`).
@@ -63,7 +65,7 @@ module.exports = {
                         ).setTimestamp();
                 } else {
                     embedMessage = embedMessage.setColor(failColor).
-                        setDescription(e.response.data.message);
+                        setDescription(e.response.data.message).
                         setFields({
                             name: 'error', value: 'If you see this message, please let us know.'
                         })
