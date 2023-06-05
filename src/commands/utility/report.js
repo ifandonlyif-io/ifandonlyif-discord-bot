@@ -37,11 +37,10 @@ module.exports = {
       await interaction.reply({
         "embeds" : [embedMessage],
       })
-
+      console.log('[command] report, invalid url', url);
       return 
     }
 
-    console.log(interaction);
 
     await axios.post(`${process.env.apiUrl}/discord/report`, {
       url: url,
@@ -60,7 +59,7 @@ module.exports = {
           project link: ${response.data.data.httpAddress}
           report at: ${moment(response.data.data.createdAt).format('YYYY/MM/DD hh:mm:ss ZZ')}
         `);
-
+      console.log('[command] report, response', response.data);
     }).catch((err) => {
       let response = err.response
       if (response.status == 409) {
@@ -92,6 +91,8 @@ module.exports = {
           setDescription(`ooh, your url format isn't right
           ${response.data.message}`)
       }
+
+      console.log('[command] report, error', err.response.data);
     });
 
     await interaction.reply({

@@ -47,13 +47,13 @@ module.exports = {
                     'Content-Type': 'multipart/form-data'
                 }            
             }).then((res) => {
-                console.log(res, embedMessage);
+                console.log('[command] apply, response', res.data);
                 embedMessage = embedMessage.setColor(successColor).
                     setDescription(`we received your appliance`).
                     setTimestamp();
 
             }).catch((e) => {
-                console.log(e);
+                console.log('[command] apply, error', e.response.data);
                 if (e.response.status == 409) {
                     embedMessage = embedMessage.setColor(warnColor).
                         setDescription(`you have applied before.`).
