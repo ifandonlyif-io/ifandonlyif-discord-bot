@@ -92,6 +92,12 @@ module.exports = {
           ${response.data.message}`)
       }
 
+      if (response.status == 423) {
+        embedMessage = embedMessage.setColor(failColor).
+          setDescription(`your channel have been banned, you can't use this command
+          banned at: ${moment(response.data.data.createdAt).format('YYYY/MM/DD hh:mm:ss ZZ')}`)
+      }
+
       console.log('[command] report, error', err.response.data);
     });
 
