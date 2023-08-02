@@ -44,7 +44,8 @@ module.exports = {
                 channel_name: interaction.guild.name,
             }, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    'api-key': 'valid-key',
                 }            
             }).then((res) => {
                 console.log('[command] apply, response', res.data);
