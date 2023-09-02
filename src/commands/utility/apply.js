@@ -39,7 +39,7 @@ module.exports = {
         const confirmation = await response.awaitMessageComponent({ filter, time: 60000 });
 
         if (confirmation.customId === 'confirm') {
-            await axios.post(`${process.env.apiUrl}/discord/apply`, {
+            await axios.post(`${process.env.apiUrl}/api/discord/apply`, {
                 guild_id: interaction.channel.guildId,
                 channel_name: interaction.guild.name,
             }, {

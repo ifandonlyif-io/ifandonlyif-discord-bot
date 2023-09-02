@@ -42,7 +42,7 @@ module.exports = {
     }
 
 
-    await axios.post(`${process.env.apiUrl}/discord/report`, {
+    await axios.post(`${process.env.apiUrl}/api/discord/report`, {
       url: url,
       guild_id: interaction.guildId,
       guild_name: interaction.guild.name,
